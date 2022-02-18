@@ -39,7 +39,7 @@ configuration is not going to take you far scalability-wise:
 Once your application reaches the limits of your server (due to increase in traffic, amount of data processed, or concurrency levels), you must decide how to scale.   
 
 Vertical scalability is accomplished by upgrading the hardware and/or network throughput. It is often the simplest solution for shortterm scalability, as it does not require architectural changes to your application.  
-Vertical scalability is a great option, especially for very small applications or if you can afford the hardware upgrades. The practical simplicity of vertical scaling is its main advantage, as you do not have to rearchitect anything. Unfortunately, vertical scaling comes with some serious limitations, the main one being cost. Vertical scalability becomes extremely expensive beyond a certain point.
+**Vertical scalability** is a great option, especially for very small applications or if you can afford the hardware upgrades. The practical simplicity of vertical scaling is its main advantage, as you do not have to rearchitect anything. Unfortunately, vertical scaling comes with some serious limitations, the main one being cost. Vertical scalability becomes extremely expensive beyond a certain point.
 The second biggest issue with vertical scalability is that it actually has hard limits.
 
 There are a number of ways to scale vertically:
@@ -71,7 +71,7 @@ Round-robin DNS is a DNS server feature allowing you to resolve a single domain 
 
 ### Distributing the Traffic: Horizontal Scalability
 
-Horizontal scalability, on the other hand, is much harder to achieve and in most cases it has to be considered before the application is built.  Systems that are truly horizontally scalable do not need strong servers—quite the opposite; they usually run on lots and lots of cheap “commodity” servers rather than a few powerful machines.   
+**Horizontal scalability**, on the other hand, is much harder to achieve and in most cases it has to be considered before the application is built.  Systems that are truly horizontally scalable do not need strong servers—quite the opposite; they usually run on lots and lots of cheap “commodity” servers rather than a few powerful machines.   
 Horizontal scalability is considered the holy grail of scalability, as it overcomes the increasing cost of capacity unit associated with scaling by buying ever-stronger hardware —you never reach a hard limit, as is the case with vertical scalability
 
 Initially they tend to cost more because they are more complex and require more work. Sometimes they cost more because you need more servers for the most basic setup, and other times it is because you need more experienced engineers to build and operate them. Using horizontal scalability, you avoid the high prices of top-tier hardware and you also avoid hitting the vertical scalability ceiling (where there is no more powerful hardware).
