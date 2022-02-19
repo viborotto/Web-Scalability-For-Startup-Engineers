@@ -3,7 +3,7 @@ Repository to take notes while read the book Web Scalability For Startup Enginee
 
 
 
-## Chapter 1  
+# Chapter 1  
 
 ## Core Concepts
 To build a success startup you must be as flexible as possible, and need to be resourceful and adapt quickly to changing conditions.  
