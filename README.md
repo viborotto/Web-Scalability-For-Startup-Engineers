@@ -89,4 +89,124 @@ Scaling for a global audience requires a few more tricks and poses a few more ch
 
 `GeoDNS`: s a DNS service that allows domain names to be resolved to IP addresses based on the location of the customer. The goal is to direct the customer to the closest data center to minimize network latency.
 
+Another extension of the infrastructure is to host multiple edge-cache servers located around the world to reduce the network latency even further. The use of edge-cache servers depends on the nature of your application. Edge-cache servers are most efficient when they act as simple reverse proxy servers caching entire pages, but they can be extended to provide other services as well.  
 
+Edge cache is a HTTP cache server located near the customer, allowing the customer to partially cache the HTTP traffic. Requests from the customer’s browser go to the edge-cache server. The server can then decide to serve the page from the cache, or it can decide to assemble the missing pieces of the page by sending background requests to your web servers. It can also decide that the page is uncacheable and delegate fully to your web servers. Edge-cache servers can serve entire pages or cache fragments of HTTP responses.  
+
+### Overview Data Center Infrastructure Flow
+
+overview of the communication flow starting from the user’s machine and continuing all the way throughout different layers of the infrastructure; 
+
+Many of the components shown serve a specialized function and can be added or removed independently. However, it is common to see all of the components working together in large-scale applications. Let’s take a closer look at each component.
+
+[imagem]
+
+#### 1. The Front Line
+
+* It is a set of components that users’ devices interact with directly. 
+* Parts of the front line may reside inside of our data center or outside of it, depending on the details of the configuration and third-party services used.
+* do not have any business logic, and their main purpose is to increase the capacity and allow scalability
+* DNS decides which data center is the closest to the client and responds with an IP address of a corresponding load balancer
+* Front cache servers 
+
+`Load Balancer`: is a software or hardware component that distributes traffic coming to a single IP address over multiple servers. Load balancers are used to share the load evenly among multiple servers and to allow dynamic addition and removal of machines. Since clients can only see the load balancer, web servers can be added at any time without service disruption.It is common to use third-party services as load balancers, CDN, and reverse proxy servers; in such cases this layer may be hosted entirely by third-party providers.
+
+Web traffic from the Internet is usually directed to a single IP address of a  strong hardware load balancer. It then gets distributed evenly over to front cache  servers (3) or directly over front-end web application servers (4). Front cache servers are optional; they can be deployed in remote locations outside of the data center or skipped altogether. In some cases it may be beneficial to have a layer of front-end cache servers to reduce the amount of load put on the rest of the infrastructure.
+ 
+ #### 2. Web Application Layer
+ 
+ * It consists of web application servers  responsible for generating the actual HTML of our web application and handling clients’ HTTP requests
+ * with a minimal amount of business logic, since the main responsibility of these servers is to render the user interface.
+ * By pushing most of your business logic to web services, you allow more reuse and reduce the number of changes needed, since the presentation layer is the one that changes most often.
+ * are usually easy to scale since they should be completely stateless. 
+
+ #### 3. Web Services Layer
+ 
+ * It is a critical layer, as it contains most of our application logic.
+ * By creating web services, we also make it easier to create functional partitions.
+ * The communication protocol used between front-end applications and web services is usually Representational State Transfer (REST) or Simple Object Access Protocol (SOAP) over HTTP.
+ * Depending on the implementation, web services should be relatively simple to scale. As long as we keep them stateless, scaling horizontally is as easy as adding more machines to the pool, as it is the deeper data layers that are more challenging to scale
+ * let’s think of web services as the core of our application and a way to isolate functionality into separate subsystems to allow independent development and scalability. 
+ 
+ #### 4. Additional Components
+ 
+ Since both front-end servers (2) and web services (3) should be stateless, web applications often deploy additional components, such as object caches and
+message queues. 
+`Object cache servers` are used by both front-end application servers and web services to reduce the load put on the data stores and speed up responses by storing partially precomputed results.
+`Messages Queues`  are used to postpone some of the processing to a later stage and to delegate work to queue worker machines
+
+#### 5. Data Persistence Layer
+
+This is usually the most difficult layer to scale horizontally
+
+#### 6. Conclusion
+
+_The layered structure of the components is deliberate and helps to reduce the load on the slower components_
+
+It is very important to remember that it is not necessary to have all of these 
+components present in order to be able to scale. Instead, use as few technologies 
+as possible, because adding each new technology adds complexity and increases 
+maintenance costs. Having more components may be more exciting, but it makes 
+releases, maintenance, and recovery procedures much more difficult.
+
+
+### Overview Application Architecture
+
+Architecture should evolve around the business model. domain-driven design and software 
+architecture1–3 that can help you get familiar with best practices of software 
+design. Without the right model and the right business logic, our databases, message 
+queues, and web frameworks are useless.  
+A `domain model` is created to represent the core functionality of the 
+application in the words of business people, not technical people.The domain model is a tool to create our 
+mental picture of the business problems that our application is supposed 
+to solve.  
+
+
+##### 1. Front End
+
+The front end should have a single responsibility of becoming the user interface. In general, the front end should stay as “dumb” as possible. 
+
+By keeping the front end “dumb,” we will be able to reuse more of the business logic. Since the logic will live only in the web services layer, we avoid the risk of coupling it with our presentation logic. We will also be able to scale front-end servers independently, as they will not need to perform complex processing or share much state, but may be exposed to high concurrency challenges.
+
+ By hiding that within the front-end layer, we can keep our services layer simpler and focused solely on the business logic, not on the presentation and web-specific technologies.
+
+_HINT: You can think of a front-end application as a plugin that can be removed, rewritten in a different programming language, and plugged back in. You should also be able to remove the “HTTP”- based front-end and plug in a “mobile application” front end or a “command line” front end. This attitude allows you to keep more options open and to make sure you decouple the front end from the core of the business logic._
+
+Projects that allow business logic in the front-end code suffer from low code reuse and high complexity. Whenever we can cache an entire HTML page or an HTML fragment, we save much more processing time than caching just the database query that was used to render this HTML. 
+
+##### 2. Web Services
+
+* the place where most of the business logic should live
+* `Service-oriented architecture (SOA)`:  is architecture centered on loosely 
+coupled and highly autonomous services focused on solving business 
+needs. In SOA, it is preferred that all the services have clearly defined 
+contracts and use the same communication protocols. I don’t consider 
+SOAP, REST, JSON, or XML in the definition of SOA, as they are 
+implementation details. It does not matter what technology you use or 
+what protocols are involved as long as your services are loosely coupled 
+and specialized in solving a narrow set of business needs. 
+
+HINT: Watch out for similar acronyms: SOA (service-oriented architecture) and SOAP (which originally was an acronym of Simple Object Access Protocol). Although these two can be seen together, SOA is an architecture style and SOAP is a set of technologies used to define, discover, and use web services. You can have SOA without SOAP, and you can also use SOAP in other architecture styles
+
+SOA is not an answer to all problems and other architecture styles exist, including `layered architecture, hexagonal architecture, and event-driven architecture`.
+
+Layers enforce structure and reduce coupling as components in the lower layers become simpler and less coupled with the rest of the system
+
+
+HINT: Web services may depend on each other, but the less they depend on each other, the better. A higher level of abstraction provided by services allows you to see the entire system and still understand it. Each service hides the details of its implementation and presents a simplified, high-level API.
+
+. Such a service would not require Mostuser data or assistance from any other services; it would be fully independent. times, there will be some dependencies between different services. No matter what the implementation of your web services, don’t forget their main purpose: to solve business needs.
+
+ Because they are third-party technologies, they can be treated as black boxes in the context of architecture. From the application architecture point of view, the data store is something that lets us write and read data.
+ 
+ _HINT: Think of the data store as you think of caches, search engines, and message queues—as plugand-play extensions, you should be able to do it by replacing the connectivity components, leaving the overall architecture intact._
+ 
+ Third-party services are outside of our control, so they are put outside of our system boundary. Since we do not have control over them, we cannot expect them to function well, not have bugs, or scale as fast as we would wish.
+ 
+ ### Summary Chapter 1
+ 
+* Architecture is the perspective of the software designer; infrastructure is the perspective of the system engineer
+*  scalability is not an easy topic. It touches on many aspects of software design and architecture
+*  Scalability can only be tamed once you understand how all the pieces come together, what their roles are, and what their strong points and weak points are.
+
+# Chapter 2
