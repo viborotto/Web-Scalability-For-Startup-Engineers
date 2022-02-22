@@ -186,14 +186,14 @@ implementation details. It does not matter what technology you use or
 what protocols are involved as long as your services are loosely coupled 
 and specialized in solving a narrow set of business needs. 
 
-HINT: Watch out for similar acronyms: SOA (service-oriented architecture) and SOAP (which originally was an acronym of Simple Object Access Protocol). Although these two can be seen together, SOA is an architecture style and SOAP is a set of technologies used to define, discover, and use web services. You can have SOA without SOAP, and you can also use SOAP in other architecture styles
+_HINT: Watch out for similar acronyms: SOA (service-oriented architecture) and SOAP (which originally was an acronym of Simple Object Access Protocol). Although these two can be seen together, SOA is an architecture style and SOAP is a set of technologies used to define, discover, and use web services. You can have SOA without SOAP, and you can also use SOAP in other architecture styles_
 
 SOA is not an answer to all problems and other architecture styles exist, including `layered architecture, hexagonal architecture, and event-driven architecture`.
 
 Layers enforce structure and reduce coupling as components in the lower layers become simpler and less coupled with the rest of the system
 
 
-HINT: Web services may depend on each other, but the less they depend on each other, the better. A higher level of abstraction provided by services allows you to see the entire system and still understand it. Each service hides the details of its implementation and presents a simplified, high-level API.
+_HINT: Web services may depend on each other, but the less they depend on each other, the better. A higher level of abstraction provided by services allows you to see the entire system and still understand it. Each service hides the details of its implementation and presents a simplified, high-level API._
 
 . Such a service would not require Mostuser data or assistance from any other services; it would be fully independent. times, there will be some dependencies between different services. No matter what the implementation of your web services, don’t forget their main purpose: to solve business needs.
 
@@ -210,3 +210,5 @@ HINT: Web services may depend on each other, but the less they depend on each ot
 *  Scalability can only be tamed once you understand how all the pieces come together, what their roles are, and what their strong points and weak points are.
 
 # Chapter 2
+
+
