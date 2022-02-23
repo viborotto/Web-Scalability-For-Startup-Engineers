@@ -209,6 +209,6 @@ _HINT: Web services may depend on each other, but the less they depend on each o
 *  scalability is not an easy topic. It touches on many aspects of software design and architecture
 *  Scalability can only be tamed once you understand how all the pieces come together, what their roles are, and what their strong points and weak points are.
 
-# Chapter 2
+# Chapter 2 - Principles of Good Software Design
 
 
